@@ -5,6 +5,7 @@ import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
+import authConfigBase from "@/lib/auth.config";
 import { db } from "@/lib/db";
 import { loginSchema } from "@/lib/validators/auth";
 import { resolveOrgFromEmail } from "@/lib/resolve-org";
@@ -34,13 +35,8 @@ const prismaAdapter: Adapter = {
 };
 
 export const authConfig: NextAuthConfig = {
+  ...authConfigBase,
   adapter: prismaAdapter,
-  session: { strategy: "jwt" },
-  trustHost: true,
-  pages: {
-    signIn: "/login",
-    newUser: "/complete-profile",
-  },
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -84,6 +80,7 @@ export const authConfig: NextAuthConfig = {
     }),
   ],
   callbacks: {
+    ...authConfigBase.callbacks,
     async jwt({ token, user, trigger }) {
       if (user || trigger === "update") {
         const dbUser = await db.user.findUnique({
@@ -117,18 +114,6 @@ export const authConfig: NextAuthConfig = {
         }
       }
       return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const user = session.user as any;
-        user.id = token.id;
-        user.role = token.role;
-        user.department = token.department;
-        user.isVerified = token.isVerified;
-        user.profileCompleted = token.profileCompleted;
-      }
-      return session;
     },
   },
 };
