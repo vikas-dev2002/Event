@@ -2,6 +2,7 @@ import React from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 import type { EventSummary } from '@/types/event';
 import { formatDate, formatTime } from '@/utils/formatDate';
+import { resolveAssetUrl } from '@/utils/assets';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { OrgIdentity } from '@/components/ui/OrgIdentity';
@@ -13,13 +14,14 @@ interface EventCardProps {
 
 export function EventCard({ event, onPress }: EventCardProps) {
   const spotsLeft = event.capacity - event._count.registrations;
+  const posterUrl = resolveAssetUrl(event.posterUrl);
 
   return (
     <Pressable onPress={onPress}>
       <Card>
-        {event.posterUrl ? (
+        {posterUrl ? (
           <Image
-            source={{ uri: event.posterUrl }}
+            source={{ uri: posterUrl }}
             className="mb-4 h-44 w-full rounded-2xl bg-neutral-100"
             resizeMode="cover"
           />

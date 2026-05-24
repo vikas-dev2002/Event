@@ -13,6 +13,7 @@ import { OrgIdentity } from '@/components/ui/OrgIdentity';
 import { Screen } from '@/components/ui/Screen';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
+import { resolveAssetUrl } from '@/utils/assets';
 import { useEvent } from '@/hooks/useEvents';
 import { formatDate, formatTime } from '@/utils/formatDate';
 
@@ -73,13 +74,14 @@ export function EventDetailScreen({
   const userRegistration = event.registrations?.[0];
   const documents = parseDocuments(event.customFields);
   const isFull = event._count.registrations >= event.capacity;
+  const posterUrl = resolveAssetUrl(event.posterUrl);
 
   return (
     <Screen>
       <Header title={event.title} subtitle={`${formatDate(event.startDate)} • ${formatTime(event.startDate)}`} />
 
-      {event.posterUrl ? (
-        <Image source={{ uri: event.posterUrl }} className="h-60 w-full rounded-3xl bg-neutral-100" resizeMode="cover" />
+      {posterUrl ? (
+        <Image source={{ uri: posterUrl }} className="h-60 w-full rounded-3xl bg-neutral-100" resizeMode="cover" />
       ) : null}
 
       <Card>

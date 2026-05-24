@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, Text, View } from 'react-native';
 import { Building2 } from 'lucide-react-native';
+import { resolveAssetUrl } from '@/utils/assets';
 import { AppText } from './Typography';
 
 type OrgIdentitySize = 'sm' | 'md';
@@ -49,6 +50,7 @@ export function OrgIdentity({
 }: OrgIdentityProps) {
   const styles = sizeClasses[size];
   const showSubtitle = Boolean(subtitle);
+  const resolvedLogoUrl = resolveAssetUrl(logoUrl);
 
   return (
     <View
@@ -56,8 +58,8 @@ export function OrgIdentity({
         variant === 'subtle' ? 'rounded-2xl border border-neutral-200 bg-neutral-50 px-3 py-2' : ''
       } ${className}`.trim()}>
       <View className={`${styles.avatar} items-center justify-center overflow-hidden rounded-2xl bg-neutral-200`}>
-        {logoUrl ? (
-          <Image source={{ uri: logoUrl }} className="h-full w-full" resizeMode="cover" />
+        {resolvedLogoUrl ? (
+          <Image source={{ uri: resolvedLogoUrl }} className="h-full w-full" resizeMode="cover" />
         ) : getInitials(name) ? (
           <Text className={`${styles.initials} font-semibold text-neutral-700`}>{getInitials(name)}</Text>
         ) : (
