@@ -30,6 +30,7 @@ export async function GET(
             id: true,
             name: true,
             slug: true,
+            logo: true,
           },
         },
         registrations: currentUser

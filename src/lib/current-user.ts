@@ -27,6 +27,7 @@ export const currentUserSelect = {
       id: true,
       name: true,
       slug: true,
+      logo: true,
     },
   },
 } satisfies Prisma.UserSelect;

@@ -16,6 +16,7 @@ import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { LoadingState } from '@/components/ui/LoadingState';
+import { OrgIdentity } from '@/components/ui/OrgIdentity';
 import { Screen } from '@/components/ui/Screen';
 import { AppText } from '@/components/ui/Typography';
 import { useAuth } from '@/hooks/useAuth';
@@ -90,7 +91,9 @@ function CommentThread({
         <View className="gap-3">
           <View className="gap-1">
             <AppText variant="label">{comment.author.name}</AppText>
-            <AppText variant="caption" tone="muted">{formatDateTime(comment.createdAt)}</AppText>
+            <AppText variant="caption" tone="muted">
+              {formatDateTime(comment.createdAt)}
+            </AppText>
           </View>
           <AppText variant="bodySmall">{comment.content}</AppText>
           <ReactionBar
@@ -99,7 +102,9 @@ function CommentThread({
             onReact={emoji => onReact(comment.id, emoji)}
           />
           <Pressable onPress={() => setReplyTo(replyTo === comment.id ? null : comment.id)}>
-            <AppText variant="caption" tone="primary">{replyTo === comment.id ? 'Cancel reply' : 'Reply'}</AppText>
+            <AppText variant="caption" tone="primary">
+              {replyTo === comment.id ? 'Cancel reply' : 'Reply'}
+            </AppText>
           </Pressable>
         </View>
       </Card>
@@ -111,7 +116,9 @@ function CommentThread({
               <View className="gap-3">
                 <View className="gap-1">
                   <AppText variant="label">{reply.author.name}</AppText>
-                  <AppText variant="caption" tone="muted">{formatDateTime(reply.createdAt)}</AppText>
+                  <AppText variant="caption" tone="muted">
+                    {formatDateTime(reply.createdAt)}
+                  </AppText>
                 </View>
                 <AppText variant="bodySmall">{reply.content}</AppText>
                 <ReactionBar
@@ -249,9 +256,7 @@ export function AnnouncementDetailScreen({
   return (
     <Screen refreshing={detailQuery.isRefetching} onRefresh={() => detailQuery.refetch()}>
       <View className="flex-row items-center justify-between">
-        <Pressable
-          onPress={() => navigation.goBack()}
-          className="h-11 w-11 items-center justify-center rounded-2xl bg-neutral-100">
+        <Pressable onPress={() => navigation.goBack()} className="h-11 w-11 items-center justify-center rounded-2xl bg-neutral-100">
           <ArrowLeft size={20} color="#171717" />
         </Pressable>
         <AppText variant="label">Announcement</AppText>
@@ -292,9 +297,19 @@ export function AnnouncementDetailScreen({
                   <AppText variant="screenTitle">{announcement.title}</AppText>
                   {announcement.isPinned ? <Badge label="Pinned" tone="warning" /> : null}
                 </View>
-                <AppText variant="bodySmall" tone="muted">
-                  {announcement.author.name} • {announcement.author.role} • {formatDateTime(announcement.createdAt)}
-                </AppText>
+                {announcement.org ? (
+                  <OrgIdentity
+                    name={announcement.org.name}
+                    logoUrl={announcement.org.logo}
+                    subtitle={`${announcement.author.name} • ${announcement.author.role} • ${formatDateTime(announcement.createdAt)}`}
+                    size="sm"
+                    variant="plain"
+                  />
+                ) : (
+                  <AppText variant="bodySmall" tone="muted">
+                    {announcement.author.name} • {announcement.author.role} • {formatDateTime(announcement.createdAt)}
+                  </AppText>
+                )}
               </View>
 
               <AppText variant="body">{announcement.content}</AppText>
@@ -348,7 +363,11 @@ export function AnnouncementDetailScreen({
                 placeholderTextColor="#737373"
                 className="min-h-28 rounded-2xl border border-neutral-200 bg-white px-4 py-4 text-base text-neutral-900"
               />
-              <Button title={replyTo ? 'Post Reply' : 'Post Comment'} onPress={submitComment} loading={commentMutation.isPending} />
+              <Button
+                title={replyTo ? 'Post Reply' : 'Post Comment'}
+                onPress={submitComment}
+                loading={commentMutation.isPending}
+              />
             </>
           ) : null}
 

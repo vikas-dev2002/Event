@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { OrgIdentity } from '@/components/ui/OrgIdentity';
 import { Screen } from '@/components/ui/Screen';
 import { useAuth } from '@/hooks/useAuth';
 import { useRegistrations } from '@/hooks/useRegistrations';
@@ -89,8 +90,8 @@ export function ProfileScreen() {
             <Text className="text-2xl font-bold text-neutral-900">{user?.name ?? 'EventEase User'}</Text>
             <View className="flex-row flex-wrap gap-2">
               {user?.role ? <Badge label={user.role} tone="default" /> : null}
-              {user?.org?.name ? <Badge label={user.org.name} tone="secondary" /> : null}
             </View>
+            {user?.org?.name ? <OrgIdentity name={user.org.name} logoUrl={user.org.logo} size="sm" /> : null}
           </View>
 
           <View className="flex-row flex-wrap gap-4">

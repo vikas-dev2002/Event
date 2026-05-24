@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { MessageSquarePlus, Pin } from 'lucide-react-native';
 import { getAnnouncements } from '@/api/announcements.api';
@@ -10,6 +10,7 @@ import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { LoadingState } from '@/components/ui/LoadingState';
+import { OrgIdentity } from '@/components/ui/OrgIdentity';
 import { Screen } from '@/components/ui/Screen';
 import { AppText } from '@/components/ui/Typography';
 import { useAuth } from '@/hooks/useAuth';
@@ -56,9 +57,19 @@ function AnnouncementRow({
                 <AppText variant="cardTitle">{announcement.title}</AppText>
                 {announcement.isPinned ? <Badge label="Pinned" tone="warning" /> : null}
               </View>
-              <AppText variant="caption" tone="muted">
-                {announcement.author.name} • {formatRelativeTime(announcement.createdAt)}
-              </AppText>
+              {announcement.org ? (
+                <OrgIdentity
+                  name={announcement.org.name}
+                  logoUrl={announcement.org.logo}
+                  subtitle={`${announcement.author.name} • ${formatRelativeTime(announcement.createdAt)}`}
+                  size="sm"
+                  variant="plain"
+                />
+              ) : (
+                <AppText variant="caption" tone="muted">
+                  {announcement.author.name} • {formatRelativeTime(announcement.createdAt)}
+                </AppText>
+              )}
             </View>
             {announcement.isPinned ? <Pin size={16} color="#a16207" /> : null}
           </View>
@@ -73,16 +84,22 @@ function AnnouncementRow({
             {announcement.reactionCounts.length ? (
               announcement.reactionCounts.slice(0, 4).map(item => (
                 <View key={`${announcement.id}-${item.emoji}`} className="rounded-full bg-neutral-100 px-2.5 py-1">
-                  <AppText variant="caption">{item.emoji} {item.count}</AppText>
+                  <AppText variant="caption">
+                    {item.emoji} {item.count}
+                  </AppText>
                 </View>
               ))
             ) : (
               <View className="rounded-full bg-neutral-100 px-2.5 py-1">
-                <AppText variant="caption" tone="muted">No reactions yet</AppText>
+                <AppText variant="caption" tone="muted">
+                  No reactions yet
+                </AppText>
               </View>
             )}
             <View className="rounded-full bg-neutral-100 px-2.5 py-1">
-              <AppText variant="caption" tone="muted">{announcement._count.comments} comments</AppText>
+              <AppText variant="caption" tone="muted">
+                {announcement._count.comments} comments
+              </AppText>
             </View>
           </View>
         </View>
@@ -123,11 +140,7 @@ export function AnnouncementsScreen({ navigation }: { navigation: NavigationLike
       <Header title="Announcements" subtitle="Updates, reminders, and event notices from your organization." />
 
       {canCreate ? (
-        <Button
-          title="Post Announcement"
-          variant="outline"
-          onPress={() => navigation.navigate('CreateAnnouncement')}
-        />
+        <Button title="Post Announcement" variant="outline" onPress={() => navigation.navigate('CreateAnnouncement')} />
       ) : null}
 
       {announcements.length ? (

@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
             id: true,
             name: true,
             slug: true,
+            logo: true,
           },
         },
       },

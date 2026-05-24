@@ -70,6 +70,7 @@ export async function GET(request: NextRequest) {
               id: true,
               name: true,
               slug: true,
+              logo: true,
             },
           },
           _count: {
@@ -229,6 +230,7 @@ export async function POST(request: NextRequest) {
             id: true,
             name: true,
             slug: true,
+            logo: true,
           },
         },
       },

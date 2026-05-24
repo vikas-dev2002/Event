@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { LoadingState } from '@/components/ui/LoadingState';
+import { OrgIdentity } from '@/components/ui/OrgIdentity';
 import { Screen } from '@/components/ui/Screen';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
@@ -86,8 +87,9 @@ export function EventDetailScreen({
           <View className="flex-row flex-wrap gap-2">
             <Badge label={event.category} tone="secondary" />
             <EventStatusBadge status={event.status} />
-            {event.org ? <Badge label={event.org.name} tone="warning" /> : null}
           </View>
+
+          {event.org ? <OrgIdentity name={event.org.name} logoUrl={event.org.logo} subtitle="Hosting organization" size="sm" /> : null}
 
           <Text className="text-base leading-7 text-neutral-700">{event.description}</Text>
 

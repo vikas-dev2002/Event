@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
         take: 6,
         orderBy: { createdAt: "desc" },
         include: {
-          org: { select: { name: true } },
+          org: { select: { name: true, logo: true } },
           organizer: { select: { name: true } },
           _count: {
             select: { registrations: { where: { status: { not: "CANCELLED" } } } },

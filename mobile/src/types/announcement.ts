@@ -13,6 +13,12 @@ export interface AnnouncementEventLink {
   slug?: string;
 }
 
+export interface AnnouncementOrganization {
+  id: string;
+  name: string;
+  logo?: string | null;
+}
+
 export interface AnnouncementComment {
   id: string;
   content: string;
@@ -32,6 +38,7 @@ export interface AnnouncementSummary {
   isPinned: boolean;
   createdAt: string;
   author: AnnouncementAuthor;
+  org?: AnnouncementOrganization | null;
   event?: AnnouncementEventLink | null;
   _count: {
     comments: number;

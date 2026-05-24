@@ -9,6 +9,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { Input } from '@/components/ui/Input';
 import { LoadingState } from '@/components/ui/LoadingState';
+import { OrgIdentity } from '@/components/ui/OrgIdentity';
 import { Screen } from '@/components/ui/Screen';
 import { getErrorMessage } from '@/utils/errors';
 
@@ -76,8 +77,7 @@ export function AdminOrganizationsScreen() {
         organizations.map(org => (
           <Card key={org.id}>
             <View className="gap-2">
-              <Text className="text-lg font-semibold text-neutral-900">{org.name}</Text>
-              <Text className="text-sm text-neutral-500">{org.slug}</Text>
+              <OrgIdentity name={org.name} logoUrl={org.logo} subtitle={org.slug} size="sm" variant="plain" />
               <Text className="text-sm text-neutral-500">
                 {org._count.users} users • {org._count.events} events
               </Text>

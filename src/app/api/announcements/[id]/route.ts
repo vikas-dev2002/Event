@@ -18,6 +18,7 @@ export async function GET(
       where: { id },
       include: {
         author: { select: { id: true, name: true, avatarUrl: true, role: true } },
+        org: { select: { id: true, name: true, logo: true } },
         event: { select: { id: true, title: true, slug: true } },
         comments: {
           where: { parentId: null },
@@ -149,6 +150,7 @@ export async function PUT(
       },
       include: {
         author: { select: { id: true, name: true, avatarUrl: true, role: true } },
+        org: { select: { id: true, name: true, logo: true } },
         event: { select: { id: true, title: true, slug: true } },
       },
     });

@@ -6,6 +6,7 @@ export const profileSchema = z.object({
   year: z.string().optional(),
   phone: z.string().optional(),
   interests: z.array(z.string()).default([]),
+  organizationSlug: z.string().min(1).optional(),
 });
 
 export type ProfileInput = z.infer<typeof profileSchema>;

@@ -118,7 +118,7 @@ export function LandingScreen({ navigation }: { navigation: LandingNavigation })
 
         <AppText
           variant="display"
-          style={{ marginTop: 24, textAlign: 'center', fontSize: 36, lineHeight: 42 }}>
+          style={{ marginTop: 24, textAlign: 'center', fontSize: 32, lineHeight: 38 }}>
           Manage college events{'\n'}without the chaos
         </AppText>
 

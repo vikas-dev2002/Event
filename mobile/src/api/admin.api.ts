@@ -15,6 +15,7 @@ export async function getAdminOverview() {
       id: string;
       name: string;
       slug: string;
+      logo?: string | null;
       _count: { users: number; events: number };
     }>;
     recentEvents: Array<{
@@ -22,7 +23,7 @@ export async function getAdminOverview() {
       title: string;
       startDate: string;
       status: string;
-      org?: { name: string } | null;
+      org?: { name: string; logo?: string | null } | null;
       organizer?: { name: string } | null;
       _count: { registrations: number };
     }>;

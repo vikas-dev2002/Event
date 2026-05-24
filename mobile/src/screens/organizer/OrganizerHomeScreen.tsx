@@ -6,15 +6,18 @@ import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { LoadingState } from '@/components/ui/LoadingState';
+import { OrgIdentity } from '@/components/ui/OrgIdentity';
 import { Screen } from '@/components/ui/Screen';
 import { useOrganizedEvents } from '@/hooks/useEvents';
 import { Card } from '@/components/ui/Card';
+import { useAuth } from '@/hooks/useAuth';
 
 type OrganizerNavigation = {
   navigate: (screen: string, params?: Record<string, unknown>) => void;
 };
 
 export function OrganizerHomeScreen({ navigation }: { navigation: OrganizerNavigation }) {
+  const { user } = useAuth();
   const organizedEventsQuery = useOrganizedEvents('active');
 
   if (organizedEventsQuery.isLoading) {
@@ -57,6 +60,7 @@ export function OrganizerHomeScreen({ navigation }: { navigation: OrganizerNavig
       <Card>
         <View className="gap-3">
           <Text className="text-lg font-semibold text-neutral-900">Organization Feed</Text>
+          {user?.org ? <OrgIdentity name={user.org.name} logoUrl={user.org.logo} size="sm" /> : null}
           <Text className="text-sm text-neutral-500">
             Publish announcements, event reminders, and certificate updates for your organization.
           </Text>

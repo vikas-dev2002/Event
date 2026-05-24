@@ -4,10 +4,12 @@ import { Header } from '@/components/layout/Header';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { LoadingState } from '@/components/ui/LoadingState';
+import { OrgIdentity } from '@/components/ui/OrgIdentity';
 import { Screen } from '@/components/ui/Screen';
 import { EventCard } from '@/components/events/EventCard';
 import { Card } from '@/components/ui/Card';
 import { Text, View } from 'react-native';
+import { useAuth } from '@/hooks/useAuth';
 import { useEvents } from '@/hooks/useEvents';
 import { useRegistrations } from '@/hooks/useRegistrations';
 import { getCertificates } from '@/api/certificates.api';
@@ -21,6 +23,7 @@ interface CertificatesResponse {
 }
 
 export function StudentHomeScreen({ navigation }: { navigation: AppNavigation }) {
+  const { user } = useAuth();
   const eventsQuery = useEvents({ status: 'PUBLISHED', limit: 3 });
   const registrationsQuery = useRegistrations();
   const certificatesQuery = useQuery<CertificatesResponse>({
@@ -77,6 +80,7 @@ export function StudentHomeScreen({ navigation }: { navigation: AppNavigation })
         <Card>
           <View className="gap-3">
             <Text className="text-lg font-semibold text-neutral-900">Organization Updates</Text>
+            {user?.org ? <OrgIdentity name={user.org.name} logoUrl={user.org.logo} size="sm" /> : null}
             <Text className="text-sm text-neutral-500">
               Open announcements for reminders, certificate notices, and event updates from your organization.
             </Text>

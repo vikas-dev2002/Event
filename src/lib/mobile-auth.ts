@@ -33,7 +33,7 @@ export type MobileAuthUser = Pick<
   | "isVerified"
   | "profileCompleted"
 > & {
-  org?: Pick<Organization, "id" | "name" | "slug"> | null;
+  org?: Pick<Organization, "id" | "name" | "slug" | "logo"> | null;
 };
 
 function getMobileJwtSecret() {
@@ -163,6 +163,7 @@ export function serializeMobileUser(user: MobileAuthUser) {
           id: user.org.id,
           name: user.org.name,
           slug: user.org.slug,
+          logo: user.org.logo,
         }
       : null,
     isVerified: user.isVerified,

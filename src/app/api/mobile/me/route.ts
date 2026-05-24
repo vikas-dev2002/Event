@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAllMappedColleges } from "@/lib/college-domain-map";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/current-user";
 import { serializeMobileUser } from "@/lib/mobile-auth";
@@ -40,6 +41,43 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    let resolvedOrgId: string | null = currentUser.orgId;
+
+    if (!resolvedOrgId && parsed.data.organizationSlug) {
+      const college = getAllMappedColleges().find(
+        (item) => item.slug === parsed.data.organizationSlug
+      );
+
+      if (!college) {
+        return NextResponse.json(
+          { error: "Unknown college selection." },
+          { status: 400 }
+        );
+      }
+
+      const org = await db.organization.upsert({
+        where: { slug: college.slug },
+        create: {
+          name: college.name,
+          slug: college.slug,
+          settings: JSON.stringify({
+            city: college.city,
+            type: college.type,
+          }),
+        },
+        update: {},
+      });
+
+      resolvedOrgId = org.id;
+    }
+
+    if (!resolvedOrgId) {
+      return NextResponse.json(
+        { error: "Please select your college to complete your profile." },
+        { status: 400 }
+      );
+    }
+
     const updated = await db.user.update({
       where: { id: currentUser.id },
       data: {
@@ -48,6 +86,7 @@ export async function PATCH(request: NextRequest) {
         year: parsed.data.year || null,
         phone: parsed.data.phone || null,
         interests: parsed.data.interests,
+        orgId: resolvedOrgId,
         profileCompleted: true,
       },
       select: {
@@ -68,6 +107,7 @@ export async function PATCH(request: NextRequest) {
             id: true,
             name: true,
             slug: true,
+            logo: true,
           },
         },
       },

@@ -4,6 +4,7 @@ import type { EventSummary } from '@/types/event';
 import { formatDate, formatTime } from '@/utils/formatDate';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
+import { OrgIdentity } from '@/components/ui/OrgIdentity';
 
 interface EventCardProps {
   event: EventSummary;
@@ -34,9 +35,7 @@ export function EventCard({ event, onPress }: EventCardProps) {
         </View>
 
         {event.org ? (
-          <Text className="mb-2 text-xs font-semibold uppercase tracking-wide text-purple-700">
-            {event.org.name}
-          </Text>
+          <OrgIdentity name={event.org.name} logoUrl={event.org.logo} size="sm" variant="plain" className="mb-2" />
         ) : null}
 
         <Text className="text-lg font-semibold text-neutral-900">{event.title}</Text>

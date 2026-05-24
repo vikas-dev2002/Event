@@ -40,7 +40,9 @@ export async function getCurrentUser() {
   return data.user;
 }
 
-export async function updateCurrentUser(payload: Partial<User> & { name: string; interests: string[] }) {
+export async function updateCurrentUser(
+  payload: Partial<User> & { name: string; interests: string[]; organizationSlug?: string },
+) {
   const { data } = await apiClient.patch<{ user: User; message: string }>('/api/mobile/me', payload);
   return data;
 }
