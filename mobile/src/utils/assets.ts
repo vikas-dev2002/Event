@@ -9,21 +9,52 @@ export function resolveAssetUrl(value?: string | null) {
     return null;
   }
 
-  if (
+  const resolved =
     value.startsWith('http://') ||
     value.startsWith('https://') ||
     value.startsWith('data:') ||
     value.startsWith('file:') ||
     value.startsWith('content:')
-  ) {
-    return value;
+      ? value
+      : value.startsWith('//')
+        ? `https:${value}`
+        : `${trimTrailingSlash(API_BASE_URL)}${value.startsWith('/') ? value : `/${value}`}`;
+
+  return encodeURI(resolved);
+}
+
+export function isLikelyVideoUrl(value?: string | null) {
+  if (!value) {
+    return false;
   }
 
-  if (value.startsWith('//')) {
-    return `https:${value}`;
+  const normalized = value.toLowerCase();
+  return (
+    normalized.includes('/video/upload/') ||
+    normalized.endsWith('.mp4') ||
+    normalized.endsWith('.webm') ||
+    normalized.endsWith('.mov') ||
+    normalized.includes('.mp4?') ||
+    normalized.includes('.webm?') ||
+    normalized.includes('.mov?')
+  );
+}
+
+export function resolvePosterPreviewUrl(value?: string | null) {
+  const resolved = resolveAssetUrl(value);
+
+  if (!resolved) {
+    return null;
   }
 
-  const baseUrl = trimTrailingSlash(API_BASE_URL);
-  const path = value.startsWith('/') ? value : `/${value}`;
-  return `${baseUrl}${path}`;
+  if (!isLikelyVideoUrl(resolved)) {
+    return resolved;
+  }
+
+  if (resolved.includes('res.cloudinary.com') && resolved.includes('/video/upload/')) {
+    const withFrameTransform = resolved.replace('/video/upload/', '/video/upload/so_0/');
+    return withFrameTransform.replace(/\.(mp4|webm|mov)(\?.*)?$/i, '.jpg$2');
+  }
+
+  return null;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, Linking, Text, View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
+import { PlayCircle } from 'lucide-react-native';
 import { Header } from '@/components/layout/Header';
 import { EventRegisterButton } from '@/components/events/EventRegisterButton';
 import { EventStatusBadge } from '@/components/events/EventStatusBadge';
@@ -13,7 +14,7 @@ import { OrgIdentity } from '@/components/ui/OrgIdentity';
 import { Screen } from '@/components/ui/Screen';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
-import { resolveAssetUrl } from '@/utils/assets';
+import { isLikelyVideoUrl, resolvePosterPreviewUrl } from '@/utils/assets';
 import { useEvent } from '@/hooks/useEvents';
 import { formatDate, formatTime } from '@/utils/formatDate';
 
@@ -74,7 +75,8 @@ export function EventDetailScreen({
   const userRegistration = event.registrations?.[0];
   const documents = parseDocuments(event.customFields);
   const isFull = event._count.registrations >= event.capacity;
-  const posterUrl = resolveAssetUrl(event.posterUrl);
+  const posterUrl = resolvePosterPreviewUrl(event.posterUrl);
+  const hasVideoPoster = isLikelyVideoUrl(event.posterUrl);
 
   return (
     <Screen>
@@ -82,6 +84,13 @@ export function EventDetailScreen({
 
       {posterUrl ? (
         <Image source={{ uri: posterUrl }} className="h-60 w-full rounded-3xl bg-neutral-100" resizeMode="cover" />
+      ) : hasVideoPoster ? (
+        <View className="h-60 w-full items-center justify-center rounded-3xl bg-slate-900">
+          <View className="items-center gap-3">
+            <PlayCircle size={54} color="#ffffff" />
+            <Text className="text-sm font-semibold uppercase tracking-wide text-white">Video Poster</Text>
+          </View>
+        </View>
       ) : null}
 
       <Card>
@@ -104,7 +113,10 @@ export function EventDetailScreen({
           </View>
 
           {userRegistration ? (
-            <Badge label={userRegistration.status === 'WAITLISTED' ? 'You are on the waitlist' : 'You are registered'} tone={userRegistration.status === 'WAITLISTED' ? 'warning' : 'success'} />
+            <Badge
+              label={userRegistration.status === 'WAITLISTED' ? 'You are on the waitlist' : 'You are registered'}
+              tone={userRegistration.status === 'WAITLISTED' ? 'warning' : 'success'}
+            />
           ) : !user ? (
             <View className="gap-3">
               <Text className="text-sm leading-6 text-neutral-500">

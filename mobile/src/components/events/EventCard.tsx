@@ -1,8 +1,9 @@
 import React from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
+import { PlayCircle } from 'lucide-react-native';
 import type { EventSummary } from '@/types/event';
 import { formatDate, formatTime } from '@/utils/formatDate';
-import { resolveAssetUrl } from '@/utils/assets';
+import { isLikelyVideoUrl, resolvePosterPreviewUrl } from '@/utils/assets';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { OrgIdentity } from '@/components/ui/OrgIdentity';
@@ -14,7 +15,8 @@ interface EventCardProps {
 
 export function EventCard({ event, onPress }: EventCardProps) {
   const spotsLeft = event.capacity - event._count.registrations;
-  const posterUrl = resolveAssetUrl(event.posterUrl);
+  const posterUrl = resolvePosterPreviewUrl(event.posterUrl);
+  const hasVideoPoster = isLikelyVideoUrl(event.posterUrl);
 
   return (
     <Pressable onPress={onPress}>
@@ -27,7 +29,14 @@ export function EventCard({ event, onPress }: EventCardProps) {
           />
         ) : (
           <View className="mb-4 h-44 items-center justify-center rounded-2xl bg-slate-900">
-            <Text className="text-4xl text-white">{event.category === 'TECHNICAL' ? '💻' : '🎟️'}</Text>
+            {hasVideoPoster ? (
+              <View className="items-center gap-2">
+                <PlayCircle size={42} color="#ffffff" />
+                <Text className="text-xs font-semibold uppercase tracking-wide text-white">Video Poster</Text>
+              </View>
+            ) : (
+              <Text className="text-4xl text-white">{event.category === 'TECHNICAL' ? '💻' : '🎟️'}</Text>
+            )}
           </View>
         )}
 
@@ -44,7 +53,9 @@ export function EventCard({ event, onPress }: EventCardProps) {
         <Text className="mt-2 text-sm leading-6 text-neutral-500">{event.description}</Text>
 
         <View className="mt-4 gap-1">
-          <Text className="text-sm text-neutral-700">{formatDate(event.startDate)} • {formatTime(event.startDate)}</Text>
+          <Text className="text-sm text-neutral-700">
+            {formatDate(event.startDate)} • {formatTime(event.startDate)}
+          </Text>
           <Text className="text-sm text-neutral-700">{event.venue}</Text>
           <Text className="text-sm text-neutral-500">
             Capacity {event._count.registrations}/{event.capacity}
